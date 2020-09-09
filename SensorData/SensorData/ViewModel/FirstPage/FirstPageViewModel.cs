@@ -4,7 +4,6 @@ using Plugin.Fingerprint;
 using Plugin.Fingerprint.Abstractions;
 using SensorData.Models;
 using SensorData.Services;
-using SensorData.Views;
 using Xamarin.Forms;
 
 namespace SensorData.ViewModel.FirstPage
@@ -13,19 +12,38 @@ namespace SensorData.ViewModel.FirstPage
     {
         ISensorService _sensorService;
         MasterDataModel masterDataModel;
-        public FirstPageViewModel(ISensorService sensorService)
+        INavService _navService;
+        ICache _cache;
+        IWebHelper _webHelper;
+
+        public FirstPageViewModel(ISensorService sensorService, INavService navService, ICache cache, IWebHelper webHelper)
         {
             _sensorService = sensorService;
+            _navService = navService;
+            _cache = cache;
+            _webHelper = webHelper;
 
             LoginCommand = new Command(Login);
             FingerPrintCommand = new Command(FingerPrintLoginAsync);
+            CheckAndLoadCache();
         }
 
-        private async void FingerPrintLoginAsync(object obj)
+        private void CheckAndLoadCache()
         {
-            _sensorService.StartCapture();
+            var cred = _cache.Get<CredModel>(Config.CredCacheKey);
+            if (cred != null)
+            {
+                Uname = cred.userName;
+                PassWord = cred.passWord;
+                FingerPrintLoginAsync();
+            }
+        }
+
+        private async void FingerPrintLoginAsync()
+        {
             if (await CrossFingerprint.Current.IsAvailableAsync(false))
             {
+                _sensorService.StartCapture();
                 AuthenticationRequestConfiguration config = new AuthenticationRequestConfiguration("Wait","Let me check who are u");
                 if((await CrossFingerprint.Current.AuthenticateAsync(config)).Authenticated)
                 {
@@ -38,8 +56,6 @@ namespace SensorData.ViewModel.FirstPage
         internal void StartOver()
         {
             _sensorService.FlushData();
-            Uname = "";
-            PassWord = "";
         }
 
         internal void DisposeSubscribers()
@@ -54,11 +70,39 @@ namespace SensorData.ViewModel.FirstPage
         
         private async void Login()
         {
-            if (PassWord == "Sensor@123")
+            _sensorService.StartCapture();
+            CredModel cred = new CredModel()
             {
-                DisposeSubscribers();
-                await App.Current.MainPage.Navigation.PushAsync(new NavigationPage(new SensorPage(masterDataModel)));
+                deviceId = App.DeviceId.Trim(),
+                userName = Uname.Trim(),
+                passWord = PassWord.Trim()
+            };
+            var res = await _webHelper.PostCall(cred);
+
+            switch (res)
+            {
+                case BaseResponse<LoginResponse>.Success s:
+                    SaveDetails(cred);
+                    DisposeSubscribers();
+                    _navService.Goto(new NavigationPage(new SensorData.Views.PrecisionPredictionTapPage()));
+                    break;
+                case BaseResponse<LoginResponse>.Error e:
+                    CheckAndDisplayProperAlert(e);
+                    break;
+                 default:
+                    break;
             }
+        }
+
+        private void SaveDetails(CredModel cred)
+        {
+            _cache.Add<CredModel>(cred, Config.CredCacheKey);
+        }
+
+        private void CheckAndDisplayProperAlert(BaseResponse<LoginResponse>.Error e)
+        {
+            DisposeSubscribers();
+            _navService.ShowDialog("ERROR", e.message);
         }
 
         private string _uname;

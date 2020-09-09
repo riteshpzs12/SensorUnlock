@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using SensorData.ContainerHelper;
+﻿using SensorData.ContainerHelper;
 using SensorData.ViewModel.FirstPage;
 using Xamarin.Forms;
 
@@ -35,6 +33,8 @@ namespace SensorData.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
+            Username.Placeholder = "Enter Ur Name";
+            Password.Placeholder = "Enter Sensor@123 as Password";
             ViewModel.StartOver();
         }
     }
