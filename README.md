@@ -14,3 +14,4 @@ Uniquely identify user via his phone handling from the device sensor data -
 
 
 [![Build Status](https://dev.azure.com/RStudy/Sensor/_apis/build/status/Sensor?branchName=master)](https://dev.azure.com/RStudy/Sensor/_build/latest?definitionId=1&branchName=master)
+[![Build Status](https://dev.azure.com/RStudy/Sensor/_apis/build/status/Sensor?branchName=master)](https://dev.azure.com/RStudy/Sensor/_build/latest?definitionId=1&branchName=master)
