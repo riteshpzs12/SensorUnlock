@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SensorData.Views.Registration" BackgroundImageSource="Registration2.jpg"
+             xmlns:cus="clr-namespace:SensorData.Views.CustomViews;assembly=SensorData">
+    <ContentPage.Content>
+        <AbsoluteLayout>
+            <StackLayout BackgroundColor="Transparent" AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"
+                         HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                <ScrollView VerticalScrollBarVisibility="Never" VerticalOptions="FillAndExpand" HorizontalOptions="CenterAndExpand">
+                    <StackLayout x:Name="Container" Orientation="Vertical"
+                                 VerticalOptions="StartAndExpand" Spacing="20" HorizontalOptions="CenterAndExpand">
+                        <Label Text="This is the header" FontSize="35" Margin="0,10,0,30"/>
+
+                        <Frame HorizontalOptions="Center" Padding="0" CornerRadius="8" BackgroundColor="Transparent" HasShadow="False" HeightRequest="40"
+                               IsClippedToBounds="True">
+                            <cus:CustomEntry x:Name="Name" Placeholder="Your Name" Style="{StaticResource VSMEntry}" Text="{Binding Name}"
+                                             Focused="Entry_Focused" Unfocused="Entry_UnFocused"/>
+                        </Frame>
+                        <Frame HorizontalOptions="Center" Padding="0" CornerRadius="8" BackgroundColor="Transparent" HasShadow="False" HeightRequest="40"
+                               IsClippedToBounds="True">
+                            <cus:CustomEntry x:Name="Email" Unfocused="Entry_UnFocused" Focused="Entry_Focused" Placeholder="Email Id or Phone"
+                                             Style="{StaticResource VSMEntry}" Text="{Binding EmailorPhone}">
+                            </cus:CustomEntry>
+                        </Frame>
+                        <Frame HorizontalOptions="Center" Padding="0" CornerRadius="8" BackgroundColor="Transparent" HasShadow="False"
+                               IsClippedToBounds="True" HeightRequest="40">
+                            <cus:CustomEntry x:Name="Password1" Focused="Entry_Focused" Unfocused="Entry_UnFocused" Placeholder="Password"
+                                             Style="{StaticResource VSMEntry}" Text="{Binding PassWord}" IsPassword="True">
+                            </cus:CustomEntry>
+                        </Frame>
+                        <Frame HorizontalOptions="Center" Padding="0"  CornerRadius="8" BackgroundColor="Transparent" HasShadow="False"
+                               IsClippedToBounds="True" HeightRequest="40">
+                            <cus:CustomEntry x:Name="Password2" Focused="Entry_Focused" Placeholder="Confirm Password" Unfocused="Entry_UnFocused"
+                                             Style="{StaticResource VSMEntry}" Text="{Binding ConfirmPassword}"
+                                   IsPassword="True">
+                            </cus:CustomEntry>
+                        </Frame>
+                        <StackLayout Orientation="Horizontal" Spacing="0" HorizontalOptions="Center">
+                            <CheckBox x:Name="Policy" CheckedChanged="CheckBox_CheckedChanged" IsEnabled="False">
+                            </CheckBox>
+                            <Label Text="This is the privacy policy" VerticalOptions="Center">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding Source={x:Reference Policy}, Path=IsEnabled}" Value="False">
+                                        <Setter Property="Opacity" Value="0.7"/>
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </StackLayout>
+                        <StackLayout>
+                            <Button x:Name="register" Style="{StaticResource ButtonStyle1}" Padding="10,0,10,0" IsEnabled="{Binding IsRegisterEnabled}"
+                                Text="Register" Command="{Binding RegisterUser}" HorizontalOptions="Center" IsVisible="False"/>
+                            <Button x:Name="consent" Style="{StaticResource ButtonStyle1}" Padding="10,0,10,0" IsEnabled="False"
+                                Text="Consent" Clicked="consent_Clicked" HorizontalOptions="Center">
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button" Binding="{Binding Source={x:Reference register}, Path=IsVisible}" Value="False">
+                                        <Setter Property="IsVisible" Value="True"/>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Button" Binding="{Binding Source={x:Reference register}, Path=IsVisible}" Value="True">
+                                        <Setter Property="IsVisible" Value="False"/>
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                        </StackLayout>
+                    </StackLayout>
+                </ScrollView>
+            </StackLayout>
+            <ContentView VerticalOptions="Fill" AbsoluteLayout.LayoutBounds="0,.5,1,.5" AbsoluteLayout.LayoutFlags="All" IsVisible="{Binding IsConsentVisible}" BackgroundColor="Transparent">
+                <Frame Padding="0" x:Name="List" HorizontalOptions="Center" VerticalOptions="Center" BackgroundColor="White" Margin="20,0,20,0" CornerRadius="15" HasShadow="False">
+                    <Grid HorizontalOptions="Center" VerticalOptions="Fill">
+                        <ListView HorizontalOptions="Center" ItemsSource="{Binding ListItems, Mode=TwoWay}" VerticalScrollBarVisibility="Never"
+                                  SeparatorVisibility="None" VerticalOptions="Center" BackgroundColor="White" Margin="10">
+                            <ListView.Header>
+                                <Grid Margin="5">
+                                    <Label Text="User Consent" FontSize="22" TextColor="Black" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"/>
+                                </Grid>
+                            </ListView.Header>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <StackLayout VerticalOptions="Center" Margin="15,0,15,0" Orientation="Horizontal">
+                                            <CheckBox IsChecked="{Binding Allowed}" VerticalOptions="Center" HorizontalOptions="Center" Margin="3"/>
+                                            <Label Text="{Binding Description}" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Center"/>
+                                        </StackLayout>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.Footer>
+                                <StackLayout BackgroundColor="Transparent" Margin="10,20,10,20" Spacing="10">
+                                    <Label VerticalOptions="Center" Text="We will Collect these data solely for research purposes." TextColor="Black" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                                    <Button Text="OK" Padding="20,0,20,0" Command="{Binding ConsentGiven}" HorizontalOptions="Center" VerticalOptions="End" BackgroundColor="LightSkyBlue" Opacity=".8" CornerRadius="10"/>
+                                </StackLayout>
+                            </ListView.Footer>
+                        </ListView>
+                    </Grid>
+                </Frame>
+            </ContentView>
+        </AbsoluteLayout>
+    </ContentPage.Content>
+</ContentPage>

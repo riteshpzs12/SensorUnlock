@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Foundation;
+using SensorData.Services;
 using UIKit;
 
 namespace SensorData.iOS
@@ -23,7 +24,6 @@ namespace SensorData.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             global::Xamarin.Forms.Forms.Init();
-            Shiny.iOSShinyHost.Init(new ShinySensor.SensorStartup());
             LoadApplication(new App());
             return base.FinishedLaunching(app, options);
         }
@@ -31,7 +31,6 @@ namespace SensorData.iOS
         public override void OnActivated(UIApplication uiApplication)
         {
             base.OnActivated(uiApplication);
-            App.DeviceId = UIKit.UIDevice.CurrentDevice.IdentifierForVendor.AsString();
         }
     }
 }

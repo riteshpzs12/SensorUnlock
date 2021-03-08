@@ -16,6 +16,8 @@
     <PackageReference Include="Shiny.Sensors" Version="1.2.0.1755" />
     <PackageReference Include="Plugin.Fingerprint" Version="2.1.1" />
     <PackageReference Include="MonkeyCache.FileStore" Version="1.3.0" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
+    <PackageReference Include="Plugin.Permissions" Version="6.0.1" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ShinySensor\" />
@@ -28,5 +30,8 @@
     <Folder Include="ViewModel\SensorPage\" />
     <Folder Include="Views\CustomViews\" />
     <Folder Include="ViewModel\PrecisionPredictionTapPage\" />
+    <Folder Include="ViewModel\Registrations\" />
+    <Folder Include="ShinySensor\Sensors_XamEssential\" />
+    <Folder Include="ViewModel\ScalePrecision\" />
   </ItemGroup>
 </Project>
