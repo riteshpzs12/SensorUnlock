@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using SensorData.Models;
 using SensorData.Services;
 using Xamarin.Forms;
 
@@ -14,25 +15,30 @@ namespace SensorData.ViewModel.ScalePrecision
         private double scalefactor;
         public double sliderFactor = 0;
         private double initial;
-
+        LevelEnum level;
         public ScalePrecisionViewModel(INavService navService)
         {
             _navService = navService;
-            //UpdatePlayGround();
             ResultCommand = new Command(CheckResult);
+            level = LevelEnum.Easy;
         }
 
-        private void CheckResult()
+        private async void CheckResult()
         {
             bool flag;
-            _navService.ShowDialog("Score", "Your Accuracy is " + Math.Round(GetResult(out flag), 2) + "///////// You drew more : " + flag);
+            await _navService.ShowDialog("Score", "Your Accuracy is " + Math.Round(GetResult(out flag), 2) + Environment.NewLine + "You drew " + (flag ? "more" : "less"));
             UpdatePlayGround();
         }
 
         private double GetResult(out bool val)
         {
-            val = BottomLine - TopLine * scalefactor / 2 > 0;
-            return 100 - Math.Abs(BottomLine - TopLine * scalefactor/2);
+            double error = BottomLine - TopLine * scalefactor / 2;
+            val = error > 0;
+            error = Math.Abs(error / TopLine * 100);
+            if (error < 100)
+                return 100 - error;
+            else
+                return 0;
         }
 
         internal void SlideIt(double value)

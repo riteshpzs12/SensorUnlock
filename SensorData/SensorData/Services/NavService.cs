@@ -26,10 +26,10 @@ namespace SensorData.Services
             App.Current.MainPage = new NavigationPage(page);
         }
 
-        public void ShowDialog(string title, string description)
+        public async Task ShowDialog(string title, string description)
         {
             if (App.Current.MainPage != null)
-                App.Current.MainPage.DisplayAlert(title, description, "Ok");
+                await App.Current.MainPage.DisplayAlert(title, description, "Ok");
         }
 
         public async Task<bool> ShowInteractiveDialogAsync(string title, string description, string positiveTetxt = "Yes", string negativText = "no")
